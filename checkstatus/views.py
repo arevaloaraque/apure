@@ -43,7 +43,6 @@ def check_procedure_extranjeria_chile(applicant):
         return False
     else:
         inital_dom = pq(procedure.text)
-        # ['2317976', '20161223120746', '93', '3239', '20180611000000', '100', 'VISA']
         data = inital_dom('a.link')[0].attrib['href'].replace('javascript: SeleccionPersona(','')
         data = data.replace(')','').replace('"','').replace("'","").split(',')
 
@@ -58,7 +57,29 @@ def check_procedure_extranjeria_chile(applicant):
         }
 
         final_response = session.post(url=url_open_procedure, data=data_to_open)
-        # final_dom = pq(final_response.text)
+        if not 'Consulta del estado de Solicitudes' in final_response.text:
+            pass
+        final_dom = pq(final_response.text)
+        data = []
+
+for tr in final_dom('#idRegistros table > tbody > tr'):
+    if len(tr.findall('table')) > 0:
+        for tr in tr.findall('table > tbody > tr'):
+            th, td = tr.find('th'), tr.find('td')
+            print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
+    else:
+        th, td = tr.find('th'), tr.find('td')
+        print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
+
+
+for table in final_dom('#idRegistros table'):
+    if table is not None:
+        if table.findall('tr') is not None:
+            for tr in table.findall('tr'):
+                th, td = tr.find('th'), tr.find('td')
+                print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
+        
+                
 
         # for status in final_dom('#solicitud .panel table'):
             
