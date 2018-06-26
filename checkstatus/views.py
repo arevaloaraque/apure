@@ -57,31 +57,19 @@ def check_procedure_extranjeria_chile(applicant):
         }
 
         final_response = session.post(url=url_open_procedure, data=data_to_open)
-        if not 'Consulta del estado de Solicitudes' in final_response.text:
+        final_response = final_response.text.replace('\t','').replace('\r','').replace('\n','')
+        if not 'Consulta del estado de Solicitudes' in final_response:
             pass
-        final_dom = pq(final_response.text)
-        data = []
+        final_dom = pq(final_response)
+        data = {}
 
-for tr in final_dom('#idRegistros table > tbody > tr'):
-    if len(tr.findall('table')) > 0:
-        for tr in tr.findall('table > tbody > tr'):
+        for tr in final_dom('#idRegistros table > tbody > tr'):
             th, td = tr.find('th'), tr.find('td')
-            print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
-    else:
-        th, td = tr.find('th'), tr.find('td')
-        print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
+            print(th.text_content().strip() if th is not None else '', td.text_content().strip() if td is not None else '')
 
+        ths = final_dom('#detalle table.borde th')
+        tds = final_dom('#detalle table.borde td')
+        for index in range(len(ths)):
+            print('{}: '.format(ths[index].text_content().strip().replace('<br>', '\n')), tds[index].text_content().strip().replace('<br>', '\n'))
 
-for table in final_dom('#idRegistros table'):
-    if table is not None:
-        if table.findall('tr') is not None:
-            for tr in table.findall('tr'):
-                th, td = tr.find('th'), tr.find('td')
-                print(th.text_content() if th is not None else '', td.text_content() if td is not None else '')
-        
-                
-
-        # for status in final_dom('#solicitud .panel table'):
-            
-
-    return final_response
+    return True
