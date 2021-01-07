@@ -7,7 +7,7 @@ curtsies==0.3.0
 Django==2.0.6
 greenlet==0.4.13
 idna==2.7
-lxml==4.2.1
+lxml==4.6.2
 pkg-resources==0.0.0
 Pygments==2.2.0
 pyquery==1.4.0
